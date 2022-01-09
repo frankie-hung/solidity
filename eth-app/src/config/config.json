@@ -1,5 +1,7 @@
 {
-  "batchSize": 100,
-  "initBlock": 13970703,
-  "savedBlock": 13970725
+  "batchSize": 400,
+  "initBlock": 13900000,
+  "savedBlock": 13964800,
+  "web3Provider": "https://mainnet.infura.io/v3/849e286604eb4c98a043c93a5545e738",
+  "latestBlock": 13972361
 }
