@@ -2,8 +2,5 @@
   "batchSize": 400,
   "initBlock": 13900000,
   "savedBlock": 13964800,
-  "web3Provider": "https://rinkeby.infura.io/v3/d5044c16ac6b4df59a5801631868822e",
-  "latestBlock": 13972361,
-  "accountAddress": "0x2a87E5064aE8F6429A65ab3Cf883B380E11bd46C",
-  "contractAddress": "0xF1a210687CD51A3559D9cBf95D43F772F613085F"
+  "latestBlock": 13972361
 }

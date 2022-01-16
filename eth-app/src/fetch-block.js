@@ -1,6 +1,7 @@
 const Web3 = require("web3");
 const nconf = require("nconf");
 const Block = require("./models/block");
+const dotenv = require("dotenv");
 require("./db/mongoose");
 
 nconf.use("file", { file: __dirname + "/config/config.json" });
@@ -8,7 +9,7 @@ nconf.load();
 const BATCH_SIZE = nconf.get("batchSize");
 
 // Ethereum node service connection
-const provider = nconf.get("web3Provider")
+const provider = process.env.web3Provider;
 const web3Provider = new Web3.providers.HttpProvider(provider);
 const web3 = new Web3(web3Provider);
 

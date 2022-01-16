@@ -1,35 +1,51 @@
 const Web3 = require("web3");
 const util = require("util");
 const nconf = require("nconf");
+const dotenv = require("dotenv");
 const Block = require("./models/block");
+const ethers = require("ethers");
 require("./db/mongoose");
 
 nconf.use("file", { file: __dirname + "/config/config.json" });
 nconf.load();
+dotenv.config();
 
-// Ethereum node service connection
-const provider = nconf.get("web3Provider")
-const web3Provider = new Web3.providers.HttpProvider(provider);
-const web3 = new Web3(web3Provider);
 
-const accountAddress = nconf.get("accountAddress");
-const privateKey = nconf.get("accountPrivateKey");
-const contractAddress = nconf.get("contractAddress");
+const providerURL = process.env.web3Provider;
+//const web3Provider = new Web3.providers.HttpProvider(provider);
+
+const contractAddress = process.env.contractAddress;
+const accountAddress = process.env.accountAddress;
+const privateKey = process.env.privateKey;
 
 const contract = require("./contract/gasReportContract.json");
-const { utils } = require("ethers");
+
 const abi = contract.abi;
 const MIN_BLOCK_PER_DAY = 6000;
 
-/*
-let contract = new web3.eth.Contract(abi, contractAddress, {
-    from: accountAddress,
-    gasPrice: "20000"
-});
+const updateContract = async () => {
 
-contract.methods.owner().call().then(console.log); // get the owner address
-contract.methods.updateGas(1, 12345, 6789).send({ from: accountAddress }).then(console.log)
-*/
+    // Using HTTPS
+    const web3 = createAlchemyWeb3(process.env.AlchemyProvider);
+  
+    // Alchemy Provider
+    const alchemyProvider = new ethers.providers.AlchemyProvider(network = "rinkeby", "B21Bb7zEchGknjjByOos-Ak5ilRE-do9");
+    const signer = new ethers.Wallet(privateKey, alchemyProvider);
+    console.log(alchemyProvider);
+    const gasReportContract = new ethers.Contract(contractAddress, abi, signer);
+
+    const owner = await gasReportContract.owner();
+    console.log("Owner: " + owner);
+
+    // console.log("Calling updateGas function...");
+    // const tx = await gasReportContract.updateGas(1, 1000, 2000);
+    // await tx.wait();
+    // console.log("Done");
+
+}
+
+updateContract();
+
 
 const getTotalGas = async (_date) => {
     console.log("_date: " + _date);
@@ -73,11 +89,15 @@ const getTotalGas = async (_date) => {
 }
 
 // parse input
-const inputDate = new Date(process.argv[2]);
+// const inputDate = new Date(process.argv[2]);
+// if (isNaN(inputDate)) {
+//     console.log("Invalid date! Please use the format YYYY-MM-DD"); 
+//     exit(1);
+// }
 
-getTotalGas(inputDate).then((result) => {
-    console.log(result);
-}).catch((e) => {
-    console.log(e);
-})
+// getTotalGas(inputDate).then((result) => {
+//     console.log(result);
+// }).catch((e) => {
+//     console.log(e);
+// })
 
