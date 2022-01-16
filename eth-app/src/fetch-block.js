@@ -3,12 +3,11 @@ const nconf = require("nconf");
 const Block = require("./models/block");
 require("./db/mongoose");
 
-nconf.use("file", { file: "./config/config.json" });
+nconf.use("file", { file: __dirname + "/config/config.json" });
 nconf.load();
 const BATCH_SIZE = nconf.get("batchSize");
 
 // Ethereum node service connection
-//const provider = "https://mainnet.infura.io/v3/849e286604eb4c98a043c93a5545e738";
 const provider = nconf.get("web3Provider")
 const web3Provider = new Web3.providers.HttpProvider(provider);
 const web3 = new Web3(web3Provider);
@@ -91,8 +90,7 @@ const saveNewBlocks = async () => {
 };
 
 let startTime = Date.now();
-console.log("begin");
-//saveBlock(13970702).then(()=>console.log('success'))
+
 saveNewBlocks().then(() => {
     let finishTime = Date.now();
     let timeTaken = finishTime - startTime;

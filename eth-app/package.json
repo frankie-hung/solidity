@@ -10,9 +10,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ethereumjs/tx": "^3.4.0",
+    "@truffle/hdwallet-provider": "^2.0.0",
+    "dotenv": "^10.0.0",
+    "ethers": "^5.5.3",
     "mongodb": "^4.3.0",
     "mongoose": "^6.1.5",
     "nconf": "^0.11.3",
+    "util": "^0.12.4",
     "web3": "^1.6.1"
   }
 }
