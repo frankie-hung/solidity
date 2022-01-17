@@ -17,40 +17,45 @@ const providerURL = process.env.web3Provider;
 const contractAddress = process.env.contractAddress;
 const accountAddress = process.env.accountAddress;
 const privateKey = process.env.privateKey;
+const apiKey = process.env.AlchemyAPIKey;
 
 const contract = require("./contract/gasReportContract.json");
-
-const abi = contract.abi;
 const MIN_BLOCK_PER_DAY = 6000;
 
-const updateContract = async () => {
+const updateContract = async (_date) => {
 
-    // Using HTTPS
-    const web3 = createAlchemyWeb3(process.env.AlchemyProvider);
-  
     // Alchemy Provider
-    const alchemyProvider = new ethers.providers.AlchemyProvider(network = "rinkeby", "B21Bb7zEchGknjjByOos-Ak5ilRE-do9");
+    const alchemyProvider = new ethers.providers.AlchemyProvider(network = "rinkeby", apiKey);
     const signer = new ethers.Wallet(privateKey, alchemyProvider);
-    console.log(alchemyProvider);
-    const gasReportContract = new ethers.Contract(contractAddress, abi, signer);
+    const gasReportContract = new ethers.Contract(contractAddress, contract.abi, signer);
 
-    const owner = await gasReportContract.owner();
-    console.log("Owner: " + owner);
+    const timestamp = Date.parse(_date) / 1000;
+    console.log("Prepared to update for the date ", _date, "timestamp", timestamp);
+    const totalBlock = await gasReportContract.totalBlock(timestamp);
 
-    // console.log("Calling updateGas function...");
-    // const tx = await gasReportContract.updateGas(1, 1000, 2000);
-    // await tx.wait();
-    // console.log("Done");
+    if (totalBlock == 0) {
+        // update contract with totalGas and totalBlock
+        const result = await getTotalGas(_date);
+
+        if (result) {
+            console.log(result);
+            console.log("Calling smart contract updateGas function with params", timestamp, result.total_gas, result.total_count);
+            const tx = await gasReportContract.updateGas(timestamp, result.total_gas, result.total_count);
+            await tx.wait();
+            console.log("Transaction completed.");
+        }
+
+    } else {
+        console.log("Value already exists in smart contract. Update aborted.");
+    }
 
 }
 
-updateContract();
-
-
+// get total gas and block count from DB
+// if success, return {total_count, total_gas}
 const getTotalGas = async (_date) => {
-    console.log("_date: " + _date);
-    const startDate = new Date(_date);
-    console.log("start_date: " + startDate);
+
+    const startDate = _date;
     if (!util.types.isDate(startDate)) throw Error("Invalid Date!", _date);
 
     const endDate = new Date(+startDate);
@@ -70,7 +75,7 @@ const getTotalGas = async (_date) => {
             "total_gas": { "$sum": "$gasUsed" }
         }
     }]);
-    console.log('result:', result)
+    //console.log('result:', result)
     if (result) {
         if (result.count < MIN_BLOCK_PER_DAY) {
             console.log("DB does not have all records for the date " + _date);
@@ -79,25 +84,21 @@ const getTotalGas = async (_date) => {
             console.log("Record not found for the date " + _date);
             return null;
         } else {
-            return result;
+            return result[0];
         }
-
     } else {
         throw Error("DB error");
     }
 
 }
 
-// parse input
-// const inputDate = new Date(process.argv[2]);
-// if (isNaN(inputDate)) {
-//     console.log("Invalid date! Please use the format YYYY-MM-DD"); 
-//     exit(1);
-// }
+// parse input argument as date
+const inputDate = new Date(process.argv[2]);
+if (isNaN(inputDate)) {
+    console.log("Invalid date! Please use the format YYYY-MM-DD");
+    process.exit(1);
+}
 
-// getTotalGas(inputDate).then((result) => {
-//     console.log(result);
-// }).catch((e) => {
-//     console.log(e);
-// })
+updateContract(inputDate);
+
 

@@ -1,6 +1,6 @@
 {
   "batchSize": 400,
-  "initBlock": 13900000,
-  "savedBlock": 13964800,
-  "latestBlock": 13972361
+  "initBlock": 9990000,
+  "savedBlock": 9990000,
+  "latestBlock": 9990000
 }
