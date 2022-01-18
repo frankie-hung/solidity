@@ -10,17 +10,12 @@ nconf.use("file", { file: __dirname + "/config/config.json" });
 nconf.load();
 dotenv.config();
 
-
-const providerURL = process.env.web3Provider;
-//const web3Provider = new Web3.providers.HttpProvider(provider);
-
 const contractAddress = process.env.contractAddress;
 const accountAddress = process.env.accountAddress;
 const privateKey = process.env.privateKey;
 const apiKey = process.env.AlchemyAPIKey;
 
 const contract = require("./contract/gasReportContract.json");
-const MIN_BLOCK_PER_DAY = 6000;
 
 const updateContract = async (_date) => {
 
@@ -38,9 +33,8 @@ const updateContract = async (_date) => {
         const result = await getTotalGas(_date);
 
         if (result) {
-            console.log(result);
-            console.log("Calling smart contract updateGas function with params", timestamp, result.total_gas, result.total_count);
-            const tx = await gasReportContract.updateGas(timestamp, result.total_gas, result.total_count);
+            console.log("Calling smart contract updateGas function with params", timestamp, result.total_gas, result.total_block);
+            const tx = await gasReportContract.updateGas(timestamp, result.total_gas, result.total_block);
             await tx.wait();
             console.log("Transaction completed.");
         }
@@ -52,7 +46,7 @@ const updateContract = async (_date) => {
 }
 
 // get total gas and block count from DB
-// if success, return {total_count, total_gas}
+// if success, return {total_gas, total_block}
 const getTotalGas = async (_date) => {
 
     const startDate = _date;
@@ -72,19 +66,32 @@ const getTotalGas = async (_date) => {
         "$group": {
             "_id": null,
             "total_count": { "$sum": 1 },
-            "total_gas": { "$sum": "$gasUsed" }
+            "total_gas": { "$sum": "$gasUsed" },
+            "min_height": { "$min": "$height" },
+            "max_height": { "$max": "$height" }
         }
     }]);
     //console.log('result:', result)
     if (result) {
-        if (result.count < MIN_BLOCK_PER_DAY) {
-            console.log("DB does not have all records for the date " + _date);
-            return null;
-        } else if (result.length == 0) {
-            console.log("Record not found for the date " + _date);
+        if (result.length == 0) {
+            console.log("Record not found for the date", _date);
             return null;
         } else {
-            return result[0];
+            const { min_height, max_height } = result[0];
+            const min_block = await Block.findOne({ height: min_height });
+            const max_block = await Block.findOne({ height: max_height });
+            const min_block_td = (min_block.timestamp - startDate) / 1000; // time difference between start date 00:00 and first block timestamp (in sec)
+            const max_block_td = (endDate - max_block.timestamp) / 1000; //time difference between end date 00:00 and the last block timestamp (in sec)
+
+            if (min_block_td > 60 || max_block_td > 60) { // check if the DB has all blocks required for the day; assume block time is less than 15 sec
+                console.log("DB does not have all records for the date", _date);
+                return null;
+            } else {
+                return {
+                    total_gas: result[0].total_gas,
+                    total_block: result[0].total_count
+                };          
+            }
         }
     } else {
         throw Error("DB error");

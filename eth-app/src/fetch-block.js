@@ -6,14 +6,13 @@ require("./db/mongoose");
 
 nconf.use("file", { file: __dirname + "/config/config.json" });
 nconf.load();
+dotenv.config();
 const BATCH_SIZE = nconf.get("batchSize");
 
 // Ethereum node service connection
 const provider = process.env.web3Provider;
 const web3Provider = new Web3.providers.HttpProvider(provider);
 const web3 = new Web3(web3Provider);
-
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 // Fetch a block and save to DB
 const saveBlock = async (blockNum) => {
@@ -86,7 +85,7 @@ const saveNewBlocks = async () => {
             }
             //console.log("Configuration saved successfully.");
         });
-        //await sleep(1000);
+
     }
 };
 
