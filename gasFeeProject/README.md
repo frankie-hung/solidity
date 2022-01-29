@@ -1,4 +1,4 @@
-# Gas Free Report Project
+# Gas Fee Report Project
 
 ## Background
 This project is to respond a code challenge to the problems below.
@@ -12,7 +12,7 @@ This project is to respond a code challenge to the problems below.
 
 ## Setup
 
-### Pre-requsite
+### Pre-requisite
 You should have the following installed
 * Node and npm
 * MongoDB
@@ -61,6 +61,8 @@ Example:
 }
 ```
 
+4. Update the connection string of MongoDB *./src/db/mongoose.js*
+
 ### Usage 
 Go to the project folder *gasFeeProject*
 
@@ -70,7 +72,7 @@ Go to the project folder *gasFeeProject*
 We can abort anytime during fetching. The app can continue from where we stopped last time.
 
 
-#### To update the gas fee with the MongoDB data, run
+#### To update the gas fee with the DB data, run
 > node src/update-contract YYYY-MM-DD
 
 Example:
