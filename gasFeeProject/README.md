@@ -69,6 +69,25 @@ Go to the project folder *gasFeeProject*
 #### To fetch the blocks from Etherem blockchain, run
 > node src/fetch-block.js
 
+```
+gasFeeProject % node src/fetch-block.js
+Connection successful
+Latest block: 10084815
+Number of new blocks pending to save: 25769
+Saved 400/25769 blocks. Last saved block: 10059446 1.6% complete.
+Saved 800/25769 blocks. Last saved block: 10059846 3.1% complete.
+Saved 1200/25769 blocks. Last saved block: 10060246 4.7% complete.
+Saved 1600/25769 blocks. Last saved block: 10060646 6.2% complete.
+Saved 2000/25769 blocks. Last saved block: 10061046 7.8% complete.
+Saved 2400/25769 blocks. Last saved block: 10061446 9.3% complete.
+...
+Saved 24800/25769 blocks. Last saved block: 10083846 96.2% complete.
+Saved 25200/25769 blocks. Last saved block: 10084246 97.8% complete.
+Saved 25600/25769 blocks. Last saved block: 10084646 99.3% complete.
+Saved 25769/25769 blocks. Last saved block: 10084815 100.0% complete.
+Time taken in milliseconds: 534265
+```
+
 We can abort anytime during fetching. The app can continue from where we stopped last time.
 
 
@@ -76,6 +95,19 @@ We can abort anytime during fetching. The app can continue from where we stopped
 > node src/update-contract YYYY-MM-DD
 
 Example:
-> node src/update-contract 2022-01-21
+> node src/update-contract 2022-01-22
+```
+gasFeeProject % node src/update-contract.js 2022-01-22
+Prepared to update for the date  2022-01-22T00:00:00.000Z timestamp 1642809600
+Connection successful
+Calling smart contract updateGas function with params 1642809600 49947932192 5757
+Transaction completed.
+
+gasFeeProject % node src/update-contract.js 2022-01-22
+Prepared to update for the date  2022-01-22T00:00:00.000Z timestamp 1642809600
+Connection successful
+Data (timestamp) 1642809600 already exists in smart contract with total blocks 5757 . Update aborted.
+```
+
 
 The app will continue to hold as it is connecting to the DB. Press "Ctrl-C" to terminate the program when you finish.

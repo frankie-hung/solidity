@@ -40,7 +40,7 @@ const updateContract = async (_date) => {
         }
 
     } else {
-        console.log("Value already exists in smart contract. Update aborted.");
+        console.log("Data (timestamp)", timestamp, "already exists in smart contract with total blocks", totalBlock.toNumber(), ". Update aborted.");
     }
 
 }
