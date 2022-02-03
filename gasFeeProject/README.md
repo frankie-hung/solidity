@@ -36,11 +36,11 @@ If you want to run your own Ethereum node, you may check out [GETH](https://geth
    
 Example:
 ```
-accountAddress=0x2a87E5064aE8F6429A65ab3Cf883B380E11bd46C
-privateKey=85882cf7e98c6e64b7f2f68eef363140a819e82e178da243f5fa615c6285915b
-contractAddress=0xF1a210687CD51A3559D9cBf95D43F772F613085F
-web3Provider=https://rinkeby.infura.io/v3/d5044c16ac6b4df59a5801631868822e
-AlchemyAPIKey=B21Bb7zEchGknjjByOos-Ak5ilRE-do9
+accountAddress=0x2a87E5064aE8F2429A65ab6Cf883B380E11bd46B
+privateKey=85882cf7e98c6e64b7f2f68eef363182a819e82e178da243f5fa615c6285915b
+contractAddress=0xF1a210287CD51A3639D9cBf95D43F772F613085F
+web3Provider=https://rinkeby.infura.io/v3/d5044c16ac6b4df59a5801631862222e
+AlchemyAPIKey=B21Bb7zEchGknjjByOos-A7kilRE-do9
 ```
 
 3. Update ./src/config/config.json
